@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dashboard-body">
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <h2 class="logo">MyApp</h2>
+      <nav class="menu">
+        <a href="#" class="menu-item active">Dashboard</a>
+        <a href="#" class="menu-item">Profile</a>
+        <a href="#" class="menu-item">Analytics</a>
+        <a href="#" class="menu-item">Settings</a>
+        <a href="index.html" class="menu-item logout">Logout</a>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1>Welcome back</h1>
+          <p class="subtitle">Here is your dashboard overview.</p>
+        </div>
+        <div class="user-card">
+          <span class="user-avatar">U</span>
+          <span>User</span>
+        </div>
+      </header>
+
+      <section class="cards">
+        <div class="card">
+          <h3>Total Users</h3>
+          <p class="card-value">1,245</p>
+        </div>
+        <div class="card">
+          <h3>Revenue</h3>
+          <p class="card-value">$8,420</p>
+        </div>
+        <div class="card">
+          <h3>Tasks</h3>
+          <p class="card-value">18</p>
+        </div>
+        <div class="card">
+          <h3>Growth</h3>
+          <p class="card-value">+12.4%</p>
+        </div>
+      </section>
+
+      <section class="panel-grid">
+        <div class="panel">
+          <h3>Recent Activity</h3>
+          <ul class="activity-list">
+            <li>New user registered</li>
+            <li>Monthly report generated</li>
+            <li>Server backup completed</li>
+            <li>Profile updated</li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h3>Quick Actions</h3>
+          <div class="action-buttons">
+            <button>Create Report</button>
+            <button>Add User</button>
+            <button>View Logs</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
