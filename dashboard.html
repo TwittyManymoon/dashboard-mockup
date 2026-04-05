@@ -1,75 +1,576 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f7fb;
+      color: #1f2937;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      background: #1f2a44;
+      color: white;
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-title {
+      font-size: 20px;
+      font-weight: 700;
+      padding: 8px 10px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      margin-bottom: 6px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .menu a {
+      text-decoration: none;
+      color: white;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+
+    .menu a:hover {
+      background: #2f3d63;
+    }
+
+    .menu a.active {
+      background: #4f83ff;
+    }
+
+    .menu a.signout {
+      margin-top: 10px;
+      background: #b42318;
+    }
+
+    .menu a.signout:hover {
+      background: #912018;
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .page {
+      width: 100%;
+      padding: 16px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-group label {
+      font-size: 13px;
+      color: #4b5563;
+      font-weight: 600;
+    }
+
+    .filter-group select {
+      min-width: 180px;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: white;
+      font-size: 14px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      text-align: left;
+      border-top: 4px solid #dbe3f1;
+    }
+
+    .card.blue {
+      border-top-color: #4f83ff;
+    }
+
+    .card.green {
+      border-top-color: #34c759;
+    }
+
+    .card.orange {
+      border-top-color: #ff9f0a;
+    }
+
+    .card.red {
+      border-top-color: #ff4d4f;
+    }
+
+    .card-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .card-value {
+      font-size: 30px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .card-info {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      margin-bottom: 16px;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 14px;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .bar-chart-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .bar-chart {
+      min-width: 1100px;
+      height: 420px;
+      display: flex;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .y-axis {
+      width: 55px;
+      height: 100%;
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      padding-bottom: 28px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .plot-area {
+      position: relative;
+      flex: 1;
+      border-left: 1px solid #d1d5db;
+      border-bottom: 1px solid #d1d5db;
+      padding: 0 10px 28px 10px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 8px;
+      background:
+        repeating-linear-gradient(
+          to top,
+          #eef2f7 0,
+          #eef2f7 1px,
+          transparent 1px,
+          transparent 20%
+        );
+    }
+
+    .bar-group {
+      flex: 1;
+      min-width: 44px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+
+    .bars {
+      height: calc(100% - 28px);
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .bar {
+      width: 16px;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .bar.target {
+      background: #7ea6ff;
+    }
+
+    .bar.actual {
+      background: #77d3ae;
+    }
+
+    .x-label {
+      font-size: 11px;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+
+    .legend {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: #4b5563;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .line-chart-box {
+      width: 100%;
+      height: 320px;
+      border: 1px solid #edf0f5;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .line-chart-box svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .pie-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 320px;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .pie-chart {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: conic-gradient(
+        #4f83ff 0deg 162deg,
+        #77d3ae 162deg 270deg,
+        #ff9f0a 270deg 342deg,
+        #ff6b6b 342deg 360deg
+      );
+      position: relative;
+    }
+
+    .pie-chart::after {
+      content: "";
+      position: absolute;
+      inset: 42px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    .pie-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 13px;
+      color: #4b5563;
+    }
+
+    @media (max-width: 1100px) {
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .chart-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .page {
+        padding: 12px;
+      }
+    }
+  </style>
 </head>
-<body class="dashboard-body">
-  <div class="dashboard-layout">
+<body>
+  <div class="layout">
     <aside class="sidebar">
-      <h2 class="logo">MyApp</h2>
+      <div class="sidebar-title">Menu</div>
+
       <nav class="menu">
-        <a href="#" class="menu-item active">Dashboard</a>
-        <a href="#" class="menu-item">Profile</a>
-        <a href="#" class="menu-item">Analytics</a>
-        <a href="#" class="menu-item">Settings</a>
-        <a href="index.html" class="menu-item logout">Logout</a>
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="index.html" class="signout">Signout</a>
       </nav>
     </aside>
 
-    <main class="main-content">
-      <header class="topbar">
-        <div>
-          <h1>Welcome back</h1>
-          <p class="subtitle">Here is your dashboard overview.</p>
-        </div>
-        <div class="user-card">
-          <span class="user-avatar">U</span>
-          <span>User</span>
-        </div>
-      </header>
-
-      <section class="cards">
-        <div class="card">
-          <h3>Total Users</h3>
-          <p class="card-value">1,245</p>
-        </div>
-        <div class="card">
-          <h3>Revenue</h3>
-          <p class="card-value">$8,420</p>
-        </div>
-        <div class="card">
-          <h3>Tasks</h3>
-          <p class="card-value">18</p>
-        </div>
-        <div class="card">
-          <h3>Growth</h3>
-          <p class="card-value">+12.4%</p>
-        </div>
-      </section>
-
-      <section class="panel-grid">
-        <div class="panel">
-          <h3>Recent Activity</h3>
-          <ul class="activity-list">
-            <li>New user registered</li>
-            <li>Monthly report generated</li>
-            <li>Server backup completed</li>
-            <li>Profile updated</li>
-          </ul>
-        </div>
-
-        <div class="panel">
-          <h3>Quick Actions</h3>
-          <div class="action-buttons">
-            <button>Create Report</button>
-            <button>Add User</button>
-            <button>View Logs</button>
+    <main class="main">
+      <div class="page">
+        <section class="filters">
+          <div class="filter-group">
+            <label for="product">Product</label>
+            <select id="product">
+              <option>อเมซอนเบล็น 500 G</option>
+            </select>
           </div>
-        </div>
-      </section>
+
+          <div class="filter-group">
+            <label for="month">Month</label>
+            <select id="month">
+              <option>ก.พ. 26</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="cards">
+          <div class="card blue">
+            <div class="card-label">TARGET รวม (KG)</div>
+            <div class="card-value">250,800</div>
+            <div class="card-info">14 orders</div>
+          </div>
+
+          <div class="card green">
+            <div class="card-label">Actual รวม (KG)</div>
+            <div class="card-value">251,694</div>
+            <div class="card-info">+894 KG</div>
+          </div>
+
+          <div class="card orange">
+            <div class="card-label">ประสิทธิภาพ</div>
+            <div class="card-value">100.4%</div>
+            <div class="card-info">เกิน target</div>
+          </div>
+
+          <div class="card red">
+            <div class="card-label">Order ผลิต = 0</div>
+            <div class="card-value">0</div>
+            <div class="card-info">จาก 14 orders</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-title">TARGET VS ACTUAL ตามวัน</div>
+
+          <div class="legend">
+            <div class="legend-item">
+              <span class="legend-color" style="background:#7ea6ff;"></span>
+              <span>Target Qty (KG)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background:#77d3ae;"></span>
+              <span>Del. Qty (KG)</span>
+            </div>
+          </div>
+
+          <div class="bar-chart-wrap">
+            <div class="bar-chart">
+              <div class="y-axis">
+                <span>0</span>
+                <span>5K</span>
+                <span>10K</span>
+                <span>15K</span>
+                <span>20K</span>
+                <span>25K</span>
+                <span>30K</span>
+              </div>
+
+              <div class="plot-area">
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:64%;"></div><div class="bar actual" style="height:63%;"></div></div><div class="x-label">03/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:64%;"></div><div class="bar actual" style="height:64%;"></div></div><div class="x-label">04/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:64%;"></div><div class="bar actual" style="height:65%;"></div></div><div class="x-label">05/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:64%;"></div><div class="bar actual" style="height:64%;"></div></div><div class="x-label">06/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:50%;"></div><div class="bar actual" style="height:49%;"></div></div><div class="x-label">07/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:53%;"></div><div class="bar actual" style="height:52%;"></div></div><div class="x-label">08/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:50%;"></div><div class="bar actual" style="height:49%;"></div></div><div class="x-label">09/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:50%;"></div><div class="bar actual" style="height:50%;"></div></div><div class="x-label">10/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:50%;"></div><div class="bar actual" style="height:50%;"></div></div><div class="x-label">11/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:50%;"></div><div class="bar actual" style="height:50%;"></div></div><div class="x-label">12/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:50%;"></div><div class="bar actual" style="height:53%;"></div></div><div class="x-label">13/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:80%;"></div><div class="bar actual" style="height:79%;"></div></div><div class="x-label">14/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:80%;"></div><div class="bar actual" style="height:79%;"></div></div><div class="x-label">15/02</div></div>
+                <div class="bar-group"><div class="bars"><div class="bar target" style="height:80%;"></div><div class="bar actual" style="height:79%;"></div></div><div class="x-label">16/02</div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="chart-grid">
+          <div class="panel">
+            <div class="panel-title">ประสิทธิภาพตาม PRODUCT (%)</div>
+
+            <div class="legend">
+              <div class="legend-item">
+                <span class="legend-color" style="background:#ff4d4f;"></span>
+                <span>&lt; 98%</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color" style="background:#4f83ff;"></span>
+                <span>98 - 100%</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-color" style="background:#34c759;"></span>
+                <span>&gt; 100%</span>
+              </div>
+            </div>
+
+            <div class="line-chart-box">
+              <svg viewBox="0 0 600 280" preserveAspectRatio="none">
+                <line x1="50" y1="30" x2="560" y2="30" stroke="#eef2f7" />
+                <line x1="50" y1="80" x2="560" y2="80" stroke="#eef2f7" />
+                <line x1="50" y1="130" x2="560" y2="130" stroke="#eef2f7" />
+                <line x1="50" y1="180" x2="560" y2="180" stroke="#eef2f7" />
+                <line x1="50" y1="230" x2="560" y2="230" stroke="#eef2f7" />
+
+                <line x1="50" y1="20" x2="50" y2="240" stroke="#cfd8e3" />
+                <line x1="50" y1="230" x2="560" y2="230" stroke="#cfd8e3" />
+
+                <text x="18" y="234" font-size="11" fill="#6b7280">96</text>
+                <text x="18" y="184" font-size="11" fill="#6b7280">98</text>
+                <text x="10" y="134" font-size="11" fill="#6b7280">100</text>
+                <text x="10" y="84" font-size="11" fill="#6b7280">102</text>
+                <text x="10" y="34" font-size="11" fill="#6b7280">104</text>
+
+                <polyline fill="none" stroke="#ff4d4f" stroke-width="3" points="70,210 130,195" />
+                <polyline fill="none" stroke="#4f83ff" stroke-width="3" points="130,195 190,160 250,145 310,138" />
+                <polyline fill="none" stroke="#34c759" stroke-width="3" points="310,138 370,120 430,95 490,110 540,85" />
+
+                <circle cx="70" cy="210" r="4" fill="#ff4d4f" />
+                <circle cx="130" cy="195" r="4" fill="#ff4d4f" />
+                <circle cx="190" cy="160" r="4" fill="#4f83ff" />
+                <circle cx="250" cy="145" r="4" fill="#4f83ff" />
+                <circle cx="310" cy="138" r="4" fill="#4f83ff" />
+                <circle cx="370" cy="120" r="4" fill="#34c759" />
+                <circle cx="430" cy="95" r="4" fill="#34c759" />
+                <circle cx="490" cy="110" r="4" fill="#34c759" />
+                <circle cx="540" cy="85" r="4" fill="#34c759" />
+
+                <text x="60" y="255" font-size="11" fill="#6b7280">P1</text>
+                <text x="120" y="255" font-size="11" fill="#6b7280">P2</text>
+                <text x="180" y="255" font-size="11" fill="#6b7280">P3</text>
+                <text x="240" y="255" font-size="11" fill="#6b7280">P4</text>
+                <text x="300" y="255" font-size="11" fill="#6b7280">P5</text>
+                <text x="360" y="255" font-size="11" fill="#6b7280">P6</text>
+                <text x="420" y="255" font-size="11" fill="#6b7280">P7</text>
+                <text x="480" y="255" font-size="11" fill="#6b7280">P8</text>
+                <text x="530" y="255" font-size="11" fill="#6b7280">P9</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">สัดส่วนปริมาณการผลิต</div>
+
+            <div class="pie-wrap">
+              <div class="pie-chart"></div>
+
+              <div class="pie-legend">
+                <div class="legend-item">
+                  <span class="legend-color" style="background:#4f83ff;"></span>
+                  <span>อเมซอนเบล็น 500 G - 45%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-color" style="background:#77d3ae;"></span>
+                  <span>สูตร B - 30%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-color" style="background:#ff9f0a;"></span>
+                  <span>สูตร C - 20%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-color" style="background:#ff6b6b;"></span>
+                  <span>อื่น ๆ - 5%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
   </div>
 </body>
